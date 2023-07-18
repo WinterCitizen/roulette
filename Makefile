@@ -1,3 +1,6 @@
+install:
+	poetry config virtualenvs.create false && poetry install
+
 lint:
 	ruff .
 	mypy .
