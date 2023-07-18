@@ -1,3 +1,9 @@
-build:
-	python3 -m build --sdist
-	python3 -m build --wheel
+lint:
+	ruff .
+	mypy .
+
+format:
+	ruff --fix .
+
+test:
+	pytest --cov back --cov-report term-missing
