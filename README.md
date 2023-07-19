@@ -1,3 +1,6 @@
 # Rulet
+##Who shot ya?
 
-Who shot ya?
+### Installation
+
+```make startup```

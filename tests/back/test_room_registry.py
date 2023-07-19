@@ -7,8 +7,8 @@ from zoneinfo import ZoneInfo
 
 import pytest
 
-from back.interfaces.room import RoomInterface
-from back.room_registry import RoomRegistry
+from src.back.interfaces.room import RoomInterface
+from src.back.room_registry import RoomRegistry
 
 
 @dataclasses.dataclass
@@ -71,6 +71,7 @@ def test_room_registry_deletion() -> None:
 
     # Then: the room is no longer there 😁
     assert room_registry.get_room(room.get_name()) is None
+
 
 def test_room_registry_deletion_fails() -> None:
     """Test that registry raises an error when not stored room is deleted."""
