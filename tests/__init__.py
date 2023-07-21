@@ -1,1 +1,1 @@
-"""Package containing the project tests."""
+"""Package for all project's tests."""
