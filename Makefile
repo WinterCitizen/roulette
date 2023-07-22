@@ -1,3 +1,7 @@
+install-deploy:
+	poetry config virtualenvs.create false \
+    && poetry install --no-root --without local --no-interaction --no-ansi
+
 install:
 	poetry config virtualenvs.create false && poetry install
 
