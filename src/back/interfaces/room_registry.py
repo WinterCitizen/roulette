@@ -1,7 +1,7 @@
 """Module containing room registry interface."""
 from typing import Protocol, Self
 
-from back.interfaces.room import RoomInterface
+from src.back.interfaces.room import RoomInterface
 
 
 class RoomRegistryInterface(Protocol):

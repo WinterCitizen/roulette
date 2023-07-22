@@ -1,0 +1,30 @@
+- name: Deploy Docker container with docker-compose
+  hosts: roulette
+  remote_user: aalysher
+  become: true
+  vars:
+    docker_image_name: "aalysher/roulette:latest"
+    container_name: "roulette"
+    docker_compose_file: "docker-compose.yml"
+
+  tasks:
+    - name: Pull Docker image from Docker Hub
+      docker_image:
+        name: "{{ docker_image_name }}"
+        source: pull
+
+    - name: Stop and remove existing container (if any)
+      docker_container:
+        name: "{{ container_name }}"
+        state: absent
+
+    - name: Copy docker-compose.yml to the server
+      copy:
+        src: docker-compose.yml
+        dest: "{{ docker_compose_file }}"
+      
+    - name: Start the Docker container with docker-compose
+      command: docker-compose up -d
+      args:
+        chdir: "{{ docker_compose_file | dirname }}"
+
