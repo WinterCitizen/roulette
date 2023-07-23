@@ -3,8 +3,8 @@ import dataclasses
 from threading import Lock
 from typing import Self
 
-from back.interfaces.room import RoomInterface
-from back.interfaces.room_registry import RoomRegistryInterface
+from src.back.interfaces.room import RoomInterface
+from src.back.interfaces.room_registry import RoomRegistryInterface
 
 
 @dataclasses.dataclass
