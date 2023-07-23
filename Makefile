@@ -2,8 +2,8 @@ install:
 	poetry config virtualenvs.create false && poetry install --no-root
 
 lint:
-	ruff .
 	mypy .
+	ruff .
 
 format:
 	ruff --fix .

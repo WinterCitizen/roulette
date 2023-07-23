@@ -39,6 +39,8 @@ ignore = [
     "D203",
     "D213",
     "S101",
+    "ARG002",
+    "ANN102",
 ]
 line-length = 120
 
