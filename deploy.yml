@@ -1,0 +1,22 @@
+- name: Deploy Docker container with docker-compose
+  hosts: roulette
+  remote_user: root
+  tasks:
+    - name: Pull Docker image from Docker Hub
+      docker_image:
+        name: ${{ secrets.DOCKERHUB_USERNAME }}/roulette:latest
+        source: pull
+
+    - name: Stop and remove existing container (if any)
+      docker_container:
+        name: roulette
+        state: absent
+
+    - name: Copy docker-compose.yml to the server
+      copy:
+        src: docker-compose.yml
+        dest: /path/to/your/project/docker-compose.yml
+
+    - name: Start the Docker container with docker-compose
+      command: docker-compose -f /path/to/your/project/docker-compose.yml up -d
+
