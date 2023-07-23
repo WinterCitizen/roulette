@@ -5,9 +5,10 @@ from typing import Self, TypeVar
 import msgpack
 import pytest
 
-from src.back.interfaces.io import ReadStreamInterface, WriteStreamInterface
+from src.back.interfaces.io import ReadStreamInterface
 from src.back.interfaces.message import MessageInterface
 from src.back.io import MessagePrefixRegistry, MessageReader, MessageWriter
+from tests.back.fake.io import FakeWriteStream
 
 T = TypeVar("T")
 
@@ -39,20 +40,6 @@ class FakeReadStream(ReadStreamInterface):
     async def read_until(self: Self, delimeter: bytes, max_bytes: int | None = None) -> bytes:
         """Read hardcoded data ignoring the delimiter & max_bytes."""
         return self.read_bytes
-
-
-class FakeWriteStream(WriteStreamInterface):
-    """Fake write stream implementation storing written data."""
-
-    write_bytes: bytes
-
-    async def write(self: Self, data: bytes | memoryview) -> None:
-        """Write given data to the local buffer."""
-        if isinstance(data, memoryview):
-            msg = "Memoryview is not supported"
-            raise TypeError(msg)
-
-        self.write_bytes = data
 
 
 async def test_message_reader_writer() -> None:
