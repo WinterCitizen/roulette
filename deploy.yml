@@ -15,8 +15,8 @@
     - name: Copy docker-compose.yml to the server
       copy:
         src: docker-compose.yml
-        dest: /path/to/your/project/docker-compose.yml
+        dest: /root/roulette/docker-compose.yml
 
     - name: Start the Docker container with docker-compose
-      command: docker-compose -f /path/to/your/project/docker-compose.yml up -d
+      command: docker-compose -f /root/roulette/docker-compose.yml up -d
 
