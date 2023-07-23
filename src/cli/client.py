@@ -1,22 +1,33 @@
 """TCP Client."""
-from typing import Self
+from __future__ import annotations
 
-from tornado.tcpclient import TCPClient
+import dataclasses
+from typing import TYPE_CHECKING, Self
+
+from src.back.interfaces.io import ReadStreamInterface, WriteStreamInterface
+
+if TYPE_CHECKING:
+    from src.back.interfaces.message import MessageInterface
+    from src.back.io import MessageReader, MessageWriter
 
 
-class Client(TCPClient):
-    """TCP Client."""
 
-    msg_separator = b"\n"
+class ReadWriteStreamInterface(ReadStreamInterface, WriteStreamInterface):
+    """Read/Write stream interface."""
 
-    async def run(self: Self, host: str, port: int) -> bytes:
-        """Run coroutine."""
-        stream = await self.connect(host, port)
-        while True:
-            message = b"ping"
-            message += self.msg_separator
 
-            await stream.write(message)
-            response = await stream.read_until(self.msg_separator)
-            response.rstrip(self.msg_separator)
-            return response
+@dataclasses.dataclass
+class Client:
+    """Client capable of reading/writing messages through the stream."""
+
+    stream: ReadWriteStreamInterface
+    message_reader: MessageReader
+    message_writer: MessageWriter
+
+    async def read(self: Self) -> MessageInterface:
+        """Read message from the stream."""
+        return await self.message_reader.read(self.stream)
+
+    async def write(self: Self, message: MessageInterface) -> None:
+        """Write message to the stream."""
+        await self.message_writer.write(self.stream, message)
