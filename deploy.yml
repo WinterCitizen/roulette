@@ -4,7 +4,7 @@
   tasks:
     - name: Pull Docker image from Docker Hub
       docker_image:
-        name: ${{ secrets.DOCKERHUB_USERNAME }}/roulette:latest
+        name: aalysher/roulette:latest
         source: pull
 
     - name: Stop and remove existing container (if any)
