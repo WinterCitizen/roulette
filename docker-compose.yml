@@ -1,0 +1,7 @@
+version: '3'
+services:
+  roulette:
+    build: .
+    image: aalysher/roulette:latest
+    ports:
+      - "80:80"
