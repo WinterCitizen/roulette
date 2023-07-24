@@ -1,17 +1,33 @@
 """Main module instantiating server."""
-import asyncio
+from typing import Protocol, Self
 
-from src.back.server import Server
-from src.settings.settings import Settings
+from dependency_injector.wiring import Provide, inject
+
+from src.back.containers.application import ApplicationContainer
 
 
-async def main(port: int) -> None:
-    """Listen to server."""
-    server = Server()
+class ServerInterface(Protocol):
+    """Listenable server interface."""
+
+    def listen(self: Self, port: int) -> None:
+        """Listen on the given port."""
+        raise NotImplementedError
+
+
+class EventInterface(Protocol):
+    """Waitable event interface."""
+
+    async def wait(self: Self) -> None:
+        """Wait for event."""
+        raise NotImplementedError
+
+
+@inject
+async def main(
+    server: ServerInterface = Provide[ApplicationContainer.server],
+    port: int = Provide[ApplicationContainer.config.PORT],
+    event: EventInterface = Provide[ApplicationContainer.event],
+) -> None:
+    """Start the server."""
     server.listen(port)
-    await asyncio.Event().wait()
-
-
-if __name__ == "__main__":
-    settings = Settings()
-    asyncio.run(main(settings.PORT))
+    await event.wait()

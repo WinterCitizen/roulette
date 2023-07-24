@@ -32,6 +32,8 @@ jobs:
         run: |
           curl -sSL ${{ env.POETRY_URL }} | python - --version ${{ env.POETRY_VERSION }}
           echo "$HOME/.local/bin" >> $GITHUB_PATH
+      - name: Configure envs
+        run: make configure
       - name: Install Dependencies
         run: make install 
       - name: Run lint

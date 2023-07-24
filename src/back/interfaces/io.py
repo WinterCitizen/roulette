@@ -1,4 +1,5 @@
 """Module containing the project IO interfaces."""
+from collections.abc import Awaitable
 from typing import Protocol, Self
 
 from src.back.interfaces.message import MessageInterface
@@ -19,7 +20,7 @@ class MessagePrefixRegistryInterface(Protocol):
 class ReadStreamInterface(Protocol):
     """An object reading bytes from the stream."""
 
-    async def read_until(self: Self, delimeter: bytes, max_bytes: int | None = None) -> bytes:
+    def read_until(self: Self, delimeter: bytes, max_bytes: int | None = None) -> Awaitable[bytes]:
         """Read bytes from the stream."""
         raise NotImplementedError
 
@@ -27,7 +28,7 @@ class ReadStreamInterface(Protocol):
 class WriteStreamInterface(Protocol):
     """An object writing bytes to the stream."""
 
-    async def write(self: Self, data: bytes | memoryview) -> None:
+    def write(self: Self, data: bytes | memoryview) -> Awaitable[None]:
         """Write bytes to the stream."""
         raise NotImplementedError
 
