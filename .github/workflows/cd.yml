@@ -28,6 +28,14 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/roulette:latest
+
+      - name: Configure ssh
+        run: |
+          mkdir -p ~/.ssh
+          echo '${{ secrets.SSH_PRIVATE_KEY }}' > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan 139.59.215.140 >> ~/.ssh/known_hosts
+          cat ~/.ssh/known_hosts
             
       - name: Deploy to Server
         run: |

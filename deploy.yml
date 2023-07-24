@@ -12,11 +12,17 @@
         name: roulette
         state: absent
 
+    - name: Ensure roulette directory exists
+      file:
+        path: /root/roulette
+        state: directory
+        recurse: yes
+
     - name: Copy docker-compose.yml to the server
       copy:
         src: docker-compose.yml
         dest: /root/roulette/docker-compose.yml
 
     - name: Start the Docker container with docker-compose
-      command: docker-compose -f /root/roulette/docker-compose.yml up -d
+      command: docker compose -f /root/roulette/docker-compose.yml up -d
 
