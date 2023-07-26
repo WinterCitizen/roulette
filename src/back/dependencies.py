@@ -10,7 +10,5 @@ def wire_dependencies() -> None:
     APPLICATION_DEPENDENCIES.config.from_dict(Settings().__dict__)  # type: ignore[call-arg]
 
     APPLICATION_DEPENDENCIES.wire(
-        (
-            "src.back.main",
-        ),
+        ("src.back.main",),
     )

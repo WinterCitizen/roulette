@@ -37,7 +37,11 @@ class FakeReadStream(ReadStreamInterface):
 
     read_bytes: bytes
 
-    async def read_until(self: Self, delimeter: bytes, max_bytes: int | None = None) -> bytes:
+    async def read_until(
+        self: Self,
+        delimeter: bytes,
+        max_bytes: int | None = None,
+    ) -> bytes:
         """Read hardcoded data ignoring the delimiter & max_bytes."""
         return self.read_bytes
 
@@ -45,7 +49,9 @@ class FakeReadStream(ReadStreamInterface):
 async def test_message_reader_writer() -> None:
     """Test that message reader/writer work."""
     # Given: message prefix registry with message type registered
-    message_prefix_registry = MessagePrefixRegistry(prefix_to_message_type={1: FakeMessage})
+    message_prefix_registry = MessagePrefixRegistry(
+        prefix_to_message_type={1: FakeMessage},
+    )
     message_reader = MessageReader(message_prefix_registry=message_prefix_registry)
     message_writer = MessageWriter(message_prefix_registry=message_prefix_registry)
 
@@ -65,12 +71,16 @@ async def test_message_reader_writer() -> None:
     assert isinstance(message, FakeMessage)
     assert message == original_message
 
+
 def test_message_prefix_registry_validation() -> None:
     """Test that message prefix registry can't be instantiated with same values for multiple prefixes."""
     # Given:
     # When: message prefix registry is instantiated with the same message types for multiple prefixes
     # Then: an error is raised
-    with pytest.raises(ValueError, match="Message can't be associated to multiple types"):
+    with pytest.raises(
+        ValueError,
+        match="Message can't be associated to multiple types",
+    ):
         MessagePrefixRegistry(prefix_to_message_type={1: FakeMessage, 2: FakeMessage})
 
 

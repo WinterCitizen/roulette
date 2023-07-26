@@ -12,7 +12,9 @@ class Room(RoomInterface):
     """Room implementation."""
 
     name: str
-    created_at: datetime = dataclasses.field(default_factory=lambda: datetime.now(ZoneInfo("UTC")))
+    created_at: datetime = dataclasses.field(
+        default_factory=lambda: datetime.now(ZoneInfo("UTC")),
+    )
 
     def get_name(self: Self) -> str:
         """Get room name."""

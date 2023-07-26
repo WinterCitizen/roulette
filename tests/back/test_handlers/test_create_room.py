@@ -1,9 +1,10 @@
 """Module containing tests for handlers."""
 import zoneinfo
+from asyncio import Lock
 from datetime import datetime
-from threading import Lock
 
-from src.back.handlers.handlers import CreateRoomHandler, CreateRoomMessage
+from src.back.handlers.create_room import CreateRoomHandler
+from src.back.message.create_room import CreateRoomMessage
 from src.back.room_registry import RoomRegistry
 from tests.back.fake.io import FakeWriteStream
 
@@ -15,18 +16,24 @@ async def test_create_room_handler_creates_room() -> None:
     handler = CreateRoomHandler(room_registry=registry)
 
     # When: handler writes a message
-    message = CreateRoomMessage(name="new room", created_at=datetime.now(tz=zoneinfo.ZoneInfo("UTC")))
+    message = CreateRoomMessage(
+        name="new room",
+        created_at=datetime.now(tz=zoneinfo.ZoneInfo("UTC")),
+    )
     await handler.handle(message, stream=FakeWriteStream())
 
     # Then: we check that amount of rooms is 1
-    rooms = registry.get_rooms()
+    rooms = await registry.get_rooms()
     assert len(rooms) == 1
 
 
 def test_create_room_message_serializes_bytes() -> None:
     """Test create room message is successfully serialized and deserialized."""
     # Given:
-    message = CreateRoomMessage(name="new room", created_at=datetime.now(tz=zoneinfo.ZoneInfo("UTC")))
+    message = CreateRoomMessage(
+        name="new room",
+        created_at=datetime.now(tz=zoneinfo.ZoneInfo("UTC")),
+    )
 
     # When: we try to serialize and deserialize message
     serialized_message = message.to_bytes()

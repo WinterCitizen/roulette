@@ -11,7 +11,6 @@ if TYPE_CHECKING:
     from src.back.io import MessageReader, MessageWriter
 
 
-
 class ReadWriteStreamInterface(ReadStreamInterface, WriteStreamInterface):
     """Read/Write stream interface."""
 
