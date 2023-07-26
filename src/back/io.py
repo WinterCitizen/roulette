@@ -42,6 +42,7 @@ class MessagePrefixRegistry(MessagePrefixRegistryInterface):
 
         return prefix
 
+
 @dataclasses.dataclass
 class MessageReader:
     """An object reading messages from the stream."""
@@ -69,5 +70,3 @@ class MessageWriter:
         prefix = self.message_prefix_registry.get_prefix(type(message))
 
         await write_stream.write(prefix.to_bytes() + message.to_bytes() + b"\n")
-
-
