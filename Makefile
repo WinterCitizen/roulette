@@ -8,9 +8,11 @@ install:
 lint:
 	mypy .
 	ruff .
+	black --check .
 
 format:
 	ruff --fix .
+	black .
 
 test:
 	pytest --cov src --cov-report term-missing

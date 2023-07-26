@@ -27,6 +27,7 @@ pytest = "^7.4.0"
 pytest-cov = "^4.1.0"
 pytest-asyncio = "^0.21.1"
 mypy = "^1.4.1"
+black = "^23.7.0"
 
 
 [tool.poetry.group.local.dependencies]
@@ -44,6 +45,9 @@ ignore = [
     "ANN401",
     "ARG003",
 ]
+line-length = 120
+
+[tool.black]
 line-length = 120
 
 [tool.coverage.report]

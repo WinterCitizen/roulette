@@ -24,7 +24,6 @@ class FakeEvent:
         self.waiting = True
 
 
-
 async def test_main() -> None:
     """Test that backend main is working."""
     # Given:

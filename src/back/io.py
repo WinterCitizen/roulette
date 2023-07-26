@@ -3,7 +3,11 @@ import dataclasses
 from types import MappingProxyType
 from typing import Self
 
-from src.back.interfaces.io import MessagePrefixRegistryInterface, ReadStreamInterface, WriteStreamInterface
+from src.back.interfaces.io import (
+    MessagePrefixRegistryInterface,
+    ReadStreamInterface,
+    WriteStreamInterface,
+)
 from src.back.interfaces.message import MessageInterface
 
 
@@ -13,14 +17,19 @@ class MessagePrefixRegistry(MessagePrefixRegistryInterface):
     _prefix_to_message_type: MappingProxyType[int, type[MessageInterface]]
     _message_type_to_prefix: MappingProxyType[type[MessageInterface], int]
 
-    def __init__(self: Self, prefix_to_message_type: dict[int, type[MessageInterface]]) -> None:
+    def __init__(
+        self: Self,
+        prefix_to_message_type: dict[int, type[MessageInterface]],
+    ) -> None:
         """Construct the message prefix registry."""
         if len(set(prefix_to_message_type.values())) != len(prefix_to_message_type):
             msg = "Message can't be associated to multiple types"
             raise ValueError(msg)
 
         self._prefix_to_message_type = MappingProxyType(prefix_to_message_type)
-        self._message_type_to_prefix = MappingProxyType({value: key for key, value in prefix_to_message_type.items()})
+        self._message_type_to_prefix = MappingProxyType(
+            {value: key for key, value in prefix_to_message_type.items()},
+        )
 
     def get_message_type(self: Self, prefix: int) -> type[MessageInterface]:
         """Get message type for prefix."""
@@ -65,7 +74,11 @@ class MessageWriter:
 
     message_prefix_registry: MessagePrefixRegistry
 
-    async def write(self: Self, write_stream: WriteStreamInterface, message: MessageInterface) -> None:
+    async def write(
+        self: Self,
+        write_stream: WriteStreamInterface,
+        message: MessageInterface,
+    ) -> None:
         """Write the message to the stream."""
         prefix = self.message_prefix_registry.get_prefix(type(message))
 
