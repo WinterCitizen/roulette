@@ -23,3 +23,6 @@ startup:
 
 configure:
 	cp local.def.env .env
+
+run:
+	python server.py

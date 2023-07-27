@@ -27,4 +27,3 @@
       command: docker-compose up -d
       args:
         chdir: "{{ docker_compose_file | dirname }}"
-

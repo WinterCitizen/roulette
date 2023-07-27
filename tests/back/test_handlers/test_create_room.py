@@ -1,9 +1,13 @@
-"""Module containing tests for handlers."""
+"""Module containing tests for create room handler."""
 import zoneinfo
 from asyncio import Lock
 from datetime import datetime
 
+import pytest
+
 from src.back.handlers.create_room import CreateRoomHandler
+from src.back.interfaces.values.room import Room
+from src.back.interfaces.values.user import User
 from src.back.message.create_room import CreateRoomMessage
 from src.back.room_registry import RoomRegistry
 from tests.back.fake.io import FakeWriteStream
@@ -14,10 +18,13 @@ async def test_create_room_handler_creates_room() -> None:
     # Given:
     registry = RoomRegistry(rooms_lock=Lock())
     handler = CreateRoomHandler(room_registry=registry)
+    user = User(name="test")
 
     # When: handler writes a message
     message = CreateRoomMessage(
         name="new room",
+        space=2,
+        user=user,
         created_at=datetime.now(tz=zoneinfo.ZoneInfo("UTC")),
     )
     await handler.handle(message, stream=FakeWriteStream())
@@ -30,8 +37,11 @@ async def test_create_room_handler_creates_room() -> None:
 def test_create_room_message_serializes_bytes() -> None:
     """Test create room message is successfully serialized and deserialized."""
     # Given:
+    user = User(name="test")
     message = CreateRoomMessage(
         name="new room",
+        space=2,
+        user=user,
         created_at=datetime.now(tz=zoneinfo.ZoneInfo("UTC")),
     )
 
@@ -41,3 +51,13 @@ def test_create_room_message_serializes_bytes() -> None:
 
     # Then: we check that the initial message is exactly the same as deserialized message
     assert deserialized_message == message
+
+
+def test_fail_create_room_with_invalid_space() -> None:
+    """Test room cannot be created with invalid space."""
+    # Given:
+
+    # When: we attempt to create room with invalid space:
+    # Then: we catch a ValueError with a message
+    with pytest.raises(ValueError, match="Space cannot be"):
+        Room(name="fail", space=0)
