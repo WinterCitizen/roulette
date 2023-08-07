@@ -9,7 +9,7 @@ class FakeServer:
 
     listening: bool = False
 
-    def listen(self: Self, port: int) -> None:
+    def listen(self: Self, address: str, port: int) -> None:
         """Set server state to listening."""
         self.listening = True
 

@@ -1,32 +1,10 @@
 """Module testing room registry."""
-import dataclasses
 from asyncio import Lock
-from datetime import datetime
-from typing import Self
-from zoneinfo import ZoneInfo
 
 import pytest
 
-from src.back.interfaces.room import RoomInterface
 from src.back.room_registry import RoomRegistry
-
-
-@dataclasses.dataclass
-class FakeRoom(RoomInterface):
-    """Fake room implementation."""
-
-    name: str
-    created_at: datetime = dataclasses.field(
-        default_factory=lambda: datetime.now(ZoneInfo("UTC")),
-    )
-
-    def get_name(self: Self) -> str:
-        """Get room name."""
-        return self.name
-
-    def get_creation_datetime(self: Self) -> datetime:
-        """Get room creation datetime."""
-        return self.created_at
+from tests.back.fake.room import FakeRoom
 
 
 async def test_room_registry() -> None:
@@ -34,13 +12,13 @@ async def test_room_registry() -> None:
     # Given:
     room_registry = RoomRegistry(rooms_lock=Lock())
 
-    room = FakeRoom(name="test_name")
+    room = FakeRoom(name="test_name", space=2)
 
     # When: room is added to the registry
     await room_registry.add_room(room)
 
     # Then: it can be fetched by name & all rooms is a tuple of a single added room
-    assert await room_registry.get_room(room.get_name()) == room
+    assert await room_registry.get_room(room.name) == room
     assert await room_registry.get_rooms() == (room,)
 
 
@@ -49,7 +27,7 @@ async def test_room_registry_already_exists() -> None:
     # Given: room registry with added room
     room_registry = RoomRegistry(rooms_lock=Lock())
 
-    room = FakeRoom(name="test_name")
+    room = FakeRoom(name="test_name", space=2)
 
     await room_registry.add_room(room)
 
@@ -64,7 +42,7 @@ async def test_room_registry_deletion() -> None:
     # Given: registry with existing room
     room_registry = RoomRegistry(rooms_lock=Lock())
 
-    room = FakeRoom(name="test_name")
+    room = FakeRoom(name="test_name", space=2)
 
     await room_registry.add_room(room)
 
@@ -72,7 +50,7 @@ async def test_room_registry_deletion() -> None:
     await room_registry.delete_room(room)
 
     # Then: the room is no longer there 😁
-    assert await room_registry.get_room(room.get_name()) is None
+    assert await room_registry.get_room(room.name) is None
 
 
 async def test_room_registry_deletion_fails() -> None:
@@ -80,7 +58,7 @@ async def test_room_registry_deletion_fails() -> None:
     # Given: an empty registry
     room_registry = RoomRegistry(rooms_lock=Lock())
 
-    room = FakeRoom(name="test_name")
+    room = FakeRoom(name="test_name", space=2)
 
     # When: you try to delete not stored room
     # Then: an error is raised
