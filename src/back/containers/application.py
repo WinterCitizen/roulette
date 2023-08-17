@@ -9,7 +9,7 @@ from src.back.handlers.create_room import CreateRoomHandler
 from src.back.handlers.join_room import JoinRoomHandler
 from src.back.handlers.ping import PingHandler
 from src.back.handlers.routing import RoutingHandler
-from src.back.io import MessagePrefixRegistry, MessageReader, MessageWriter
+from src.back.io import IOConfig, MessagePrefixRegistry, MessageReader, MessageWriter
 from src.back.message.create_room import CreateRoomMessage
 from src.back.message.join_room import JoinRoomMessage
 from src.back.message.ping import PingMessage, PongMessage
@@ -27,7 +27,12 @@ class ApplicationContainer(containers.DeclarativeContainer):
     """Root container for the project dependencies."""
 
     config = providers.Configuration()
-
+    io_config = providers.Factory(
+        IOConfig,
+        max_message_size=config.MAX_MESSAGE_SIZE,
+        message_prefix_size=config.MESSAGE_PREFIX_SIZE,
+        message_length_size=config.MESSAGE_LENGTH_SIZE,
+    )
     message_prefix_registry = providers.Factory(
         MessagePrefixRegistry,
         providers.Dict(
@@ -43,10 +48,12 @@ class ApplicationContainer(containers.DeclarativeContainer):
     message_reader = providers.Factory(
         MessageReader,
         message_prefix_registry=message_prefix_registry,
+        config=io_config,
     )
     message_writer = providers.Factory(
         MessageWriter,
         message_prefix_registry=message_prefix_registry,
+        config=io_config,
     )
 
     room_registry = providers.Singleton(RoomRegistry, rooms_lock=asyncio.Lock())

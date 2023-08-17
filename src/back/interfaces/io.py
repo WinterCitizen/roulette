@@ -20,12 +20,8 @@ class MessagePrefixRegistryInterface(Protocol):
 class ReadStreamInterface(Protocol):
     """An object reading bytes from the stream."""
 
-    def read_until(
-        self: Self,
-        delimeter: bytes,
-        max_bytes: int | None = None,
-    ) -> Awaitable[bytes]:
-        """Read bytes from the stream."""
+    def read_bytes(self: Self, num_bytes: int) -> Awaitable[bytes]:
+        """Read requested num_bytes bytes from the stream."""
         raise NotImplementedError
 
 
