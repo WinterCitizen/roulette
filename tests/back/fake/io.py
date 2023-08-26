@@ -16,3 +16,7 @@ class FakeWriteStream(WriteStreamInterface):
             raise TypeError(msg)
 
         self.write_bytes = data
+
+    def close(self: Self) -> None:
+        """Close connection."""
+        return

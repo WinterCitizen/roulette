@@ -8,6 +8,7 @@ from src.back.interfaces.room_registry import RoomRegistryInterface
 from src.back.interfaces.values.room import Room
 from src.back.interfaces.values.user import User
 from src.back.message.create_room import CreateRoomMessage
+from src.back.notifier.notifier import NotificationInterface
 
 
 @dataclasses.dataclass
@@ -15,6 +16,7 @@ class CreateRoomHandler(MessageHandlerInterface[CreateRoomMessage]):
     """Interface for create room."""
 
     room_registry: RoomRegistryInterface
+    notifier: NotificationInterface
 
     async def handle(
         self: Self,
@@ -27,3 +29,5 @@ class CreateRoomHandler(MessageHandlerInterface[CreateRoomMessage]):
 
         user = User(name=message.user.name)
         room.add_user(user)
+
+        await self.notifier.notify()

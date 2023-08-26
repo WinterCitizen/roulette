@@ -36,5 +36,5 @@ class Room:
             "name": self.name,
             "space": self.space,
             "users": self.users,
-            "created_at": datetime.timestamp(self.created_at),
+            "created_at": self.created_at,
         }

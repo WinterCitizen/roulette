@@ -6,6 +6,7 @@ from src.back.interfaces.handlers import MessageHandlerInterface
 from src.back.interfaces.io import WriteStreamInterface
 from src.back.interfaces.room_registry import RoomRegistryInterface
 from src.back.message.join_room import JoinRoomMessage
+from src.back.notifier.notifier import NotificationInterface
 
 
 @dataclasses.dataclass
@@ -13,6 +14,7 @@ class JoinRoomHandler(MessageHandlerInterface[JoinRoomMessage]):
     """Interface for create room."""
 
     room_registry: RoomRegistryInterface
+    notifier: NotificationInterface
 
     async def handle(
         self: Self,
@@ -30,3 +32,5 @@ class JoinRoomHandler(MessageHandlerInterface[JoinRoomMessage]):
             raise ValueError(msg)
 
         room.add_user(message.user)
+
+        await self.notifier.notify()

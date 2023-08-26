@@ -11,13 +11,14 @@ from src.back.interfaces.values.user import User
 from src.back.message.create_room import CreateRoomMessage
 from src.back.room_registry import RoomRegistry
 from tests.back.fake.io import FakeWriteStream
+from tests.back.fake.notification import FakeNotification
 
 
 async def test_create_room_handler_creates_room() -> None:
     """Test should create room."""
     # Given:
     registry = RoomRegistry(rooms_lock=Lock())
-    handler = CreateRoomHandler(room_registry=registry)
+    handler = CreateRoomHandler(room_registry=registry, notifier=FakeNotification())
     user = User(name="test")
 
     # When: handler writes a message

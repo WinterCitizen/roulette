@@ -9,6 +9,7 @@ from src.back.interfaces.values.user import User
 from src.back.message.join_room import JoinRoomMessage
 from src.back.room_registry import RoomRegistry
 from tests.back.fake.io import FakeWriteStream
+from tests.back.fake.notification import FakeNotification
 
 
 async def test_join_room_handler_joins_user_to_room() -> None:
@@ -22,7 +23,7 @@ async def test_join_room_handler_joins_user_to_room() -> None:
     await registry.add_room(room)
 
     # When: handler writes a message
-    handler = JoinRoomHandler(room_registry=registry)
+    handler = JoinRoomHandler(room_registry=registry, notifier=FakeNotification())
 
     user = User(name="test")
     message = JoinRoomMessage(
@@ -41,7 +42,7 @@ async def test_fail_join_room_not_found() -> None:
     registry = RoomRegistry(rooms_lock=Lock())
 
     # When: user attemts to join a room with non-existing name
-    join_handler = JoinRoomHandler(room_registry=registry)
+    join_handler = JoinRoomHandler(room_registry=registry, notifier=FakeNotification())
     join_message = JoinRoomMessage(
         room=Room(name="room", space=2),
         user=User(name="user"),
@@ -68,7 +69,7 @@ async def test_fail_join_room_not_enough_space() -> None:
     await registry.add_room(room)
 
     # When: third user attemts to join a full room
-    join_handler = JoinRoomHandler(room_registry=registry)
+    join_handler = JoinRoomHandler(room_registry=registry, notifier=FakeNotification())
     join_message = JoinRoomMessage(
         room=room,
         user=User(name="third"),
