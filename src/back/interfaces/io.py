@@ -31,3 +31,8 @@ class WriteStreamInterface(Protocol):
     def write(self: Self, data: bytes | memoryview) -> Awaitable[None]:
         """Write bytes to the stream."""
         raise NotImplementedError
+
+    def close(self: Self) -> None:
+        """Close stream."""
+        # Should close method be in write stream interface?
+        raise NotImplementedError

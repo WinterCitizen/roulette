@@ -9,10 +9,12 @@ from src.back.handlers.create_room import CreateRoomHandler
 from src.back.handlers.join_room import JoinRoomHandler
 from src.back.handlers.ping import PingHandler
 from src.back.handlers.routing import RoutingHandler
+from src.back.interfaces.values.connection import ConnectionRegistry
 from src.back.io import IOConfig, MessagePrefixRegistry, MessageReader, MessageWriter
 from src.back.message.create_room import CreateRoomMessage
 from src.back.message.join_room import JoinRoomMessage
 from src.back.message.ping import PingMessage, PongMessage
+from src.back.notifier.notifier import Notification
 from src.back.room_registry import RoomRegistry
 from src.back.server import Server
 from src.cli.client import Client
@@ -58,16 +60,28 @@ class ApplicationContainer(containers.DeclarativeContainer):
 
     room_registry = providers.Singleton(RoomRegistry, rooms_lock=asyncio.Lock())
 
-    ping_handler = providers.Factory(PingHandler, message_writer=message_writer)
+    connection_registry = providers.Singleton(
+        ConnectionRegistry,
+    )
+
+    notification = providers.Singleton(
+        Notification,
+        room_registry=room_registry,
+        connection_registry=connection_registry,
+    )
+
+    ping_handler = providers.Factory(PingHandler, message_writer=message_writer, notifier=notification)
 
     create_room_handler = providers.Factory(
         CreateRoomHandler,
         room_registry=room_registry,
+        notifier=notification,
     )
 
     join_room_handler = providers.Factory(
         JoinRoomHandler,
         room_registry=room_registry,
+        notifier=notification,
     )
 
     routing_handler = providers.Factory(
@@ -86,6 +100,7 @@ class ApplicationContainer(containers.DeclarativeContainer):
         message_reader=message_reader,
         message_writer=message_writer,
         message_handler=routing_handler,
+        connection_registry=connection_registry,
     )
     event = providers.Factory(asyncio.Event)
 

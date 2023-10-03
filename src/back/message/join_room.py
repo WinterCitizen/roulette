@@ -35,7 +35,12 @@ class JoinRoomMessage(MessageInterface):
         """Serialize message to bytes."""
         return msgpack.dumps(
             {
-                "room": self.room.as_dict(),
+                "room": {
+                    "name": self.room.name,
+                    "space": self.room.space,
+                    "users": self.room.users,
+                    "created_at": datetime.timestamp(self.room.created_at),
+                },
                 "user": self.user.as_dict(),
             },
         )
