@@ -30,6 +30,10 @@ class Room:
         """Add user to room."""
         self.users.update({user.name: user})
 
+    def remove_user(self: Self, user_name: str) -> None:
+        """Remove user from room by user object."""
+        self.users.pop(user_name)
+
     def as_dict(self: Self) -> dict[str, Any]:
         """Convert object to dict."""
         return {
