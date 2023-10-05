@@ -13,6 +13,7 @@ from src.back.interfaces.values.connection import ConnectionRegistry
 from src.back.io import IOConfig, MessagePrefixRegistry, MessageReader, MessageWriter
 from src.back.message.create_room import CreateRoomMessage
 from src.back.message.join_room import JoinRoomMessage
+from src.back.message.leave_room import LeaveRoomMessage
 from src.back.message.ping import PingMessage, PongMessage
 from src.back.notifier.notifier import Notification
 from src.back.room_registry import RoomRegistry
@@ -43,6 +44,7 @@ class ApplicationContainer(containers.DeclarativeContainer):
                 2: PongMessage,
                 3: CreateRoomMessage,
                 4: JoinRoomMessage,
+                5: LeaveRoomMessage,
             },
         ),
     )
@@ -84,6 +86,12 @@ class ApplicationContainer(containers.DeclarativeContainer):
         notifier=notification,
     )
 
+    leave_room_handler = providers.Factory(
+        JoinRoomHandler,
+        room_registry=room_registry,
+        notifier=notification,
+    )
+
     routing_handler = providers.Factory(
         RoutingHandler,
         message_type_to_handlers=providers.Dict(
@@ -91,6 +99,7 @@ class ApplicationContainer(containers.DeclarativeContainer):
                 PingMessage: providers.List(ping_handler),
                 CreateRoomMessage: providers.List(create_room_handler),
                 JoinRoomMessage: providers.List(join_room_handler),
+                LeaveRoomMessage: providers.List(leave_room_handler),
             },
         ),
     )
