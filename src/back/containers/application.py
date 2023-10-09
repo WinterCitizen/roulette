@@ -7,6 +7,7 @@ from tornado.tcpclient import TCPClient
 
 from src.back.handlers.create_room import CreateRoomHandler
 from src.back.handlers.join_room import JoinRoomHandler
+from src.back.handlers.list_room_handler import ListRoomsHandler
 from src.back.handlers.ping import PingHandler
 from src.back.handlers.routing import RoutingHandler
 from src.back.interfaces.values.connection import ConnectionRegistry
@@ -43,6 +44,7 @@ class ApplicationContainer(containers.DeclarativeContainer):
                 2: PongMessage,
                 3: CreateRoomMessage,
                 4: JoinRoomMessage,
+                6: ListRoomsHandler,
             },
         ),
     )
@@ -84,6 +86,12 @@ class ApplicationContainer(containers.DeclarativeContainer):
         notifier=notification,
     )
 
+    list_rooms_handler = providers.Factory(
+        ListRoomsHandler,
+        room_registry=room_registry,
+        notifier=notification,
+    )
+
     routing_handler = providers.Factory(
         RoutingHandler,
         message_type_to_handlers=providers.Dict(
@@ -91,6 +99,7 @@ class ApplicationContainer(containers.DeclarativeContainer):
                 PingMessage: providers.List(ping_handler),
                 CreateRoomMessage: providers.List(create_room_handler),
                 JoinRoomMessage: providers.List(join_room_handler),
+                ListRoomsHandler: providers.List(list_rooms_handler),
             },
         ),
     )
